@@ -1,7 +1,15 @@
 import matplotlib.pyplot as plt
+import numpy as np
 from dataLoader import DataLoader
+from baselineDetect import BaselineMovMean
 
-data = DataLoader("sample.abf")
-ch = data.getChannel(0)
-plt.plot(ch[0,:],ch[1,:])
+fig, (ax1, ax2) = plt.subplots(2)
+fig.suptitle('Vertically stacked subplots')
+
+data = DataLoader("sample.abf").getChannel(0)
+mean = BaselineMovMean().run(data,1000)
+ax1.plot(data[0,:],data[1,:])
+ax1.plot(data[0,:],mean)
+baselineSub = np.array([data[0,:],data[1,:]-mean])
+ax2.plot(baselineSub[0,:],baselineSub[1,:])
 plt.show()
