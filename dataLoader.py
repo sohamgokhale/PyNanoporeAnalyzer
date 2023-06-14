@@ -1,7 +1,7 @@
 import numpy as np
 import pyabf
 
-class NanoporeData:
+class DataLoader:
     def __init__(self,filename=""):
         if(filename is None or filename==""):
             raise Exception("ERROR: No file name specified!")

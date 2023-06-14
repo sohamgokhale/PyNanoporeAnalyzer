@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
-from nanoporeData import NanoporeData
+from dataLoader import DataLoader
 
-data = NanoporeData("sample.abf")
+data = DataLoader("sample.abf")
 ch = data.getChannel(0)
 plt.plot(ch[0,:],ch[1,:])
 plt.show()
