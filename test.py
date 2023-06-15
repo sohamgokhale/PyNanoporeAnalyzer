@@ -1,19 +1,21 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from dataLoader import DataLoader
+from nanoporeData import nanoporeData
 from baselineDetect import BaselineMovMean
 from eventDetect import Event, EventDetect
 
-data = DataLoader("Data_interim/Linear_DNA_PBS_01.abf").getChannel(0)
-mean = BaselineMovMean().run(data,1000)
-baselineSub = np.array([data[0,:],data[1,:]-mean])
-flipped = np.array([baselineSub[0,:], baselineSub[1,:] * -1])
-events, peaks, times = EventDetect().run(flipped,20)
+data = nanoporeData("Data_interim/Linear_DNA_PBS_01.abf")
+channel = data.getChannel(0)
+mean = BaselineMovMean(1000)
+mean1 = mean.run(channel)
+baselineSub = channel-mean1
+flipped = baselineSub * -1
+events, peaks, times = EventDetect(20).run(flipped)
 
 plt.subplot(2,2,1)
-plt.plot(data[0,:],flipped[1,:])
-plt.plot(data[0,:],peaks)
-plt.plot(data[0,:],times)
+plt.plot(data.timeAxis,flipped)
+plt.plot(data.timeAxis,peaks)
+plt.plot(data.timeAxis,times)
 
 dwellTimes = []
 Amplitudes = []
