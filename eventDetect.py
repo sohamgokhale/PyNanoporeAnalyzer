@@ -1,7 +1,9 @@
 import numpy as np
 
+
 class Event:
     dataRate = 1
+
     def __init__(self) -> None:
         self.startIndex = 0
         self.endIndex = 0
@@ -15,12 +17,13 @@ class Event:
         self.integral = 0
 
     def _calculateDwellTime(self):
-        print(str(self.event) + " : " + str(self.startIndex) +  " : " + str(np.size(self.event,0)))
+        print(str(self.event) + " : " + str(self.startIndex) +
+              " : " + str(np.size(self.event, 0)))
         dwellStart = self.eventMaximaIndex
         dwellEnd = self.eventMaximaIndex
-        while ((self.event[dwellStart]>(self.eventMaxima/2)) and (dwellStart>1)):
+        while ((self.event[dwellStart] > (self.eventMaxima/2)) and (dwellStart > 1)):
             dwellStart -= 1
-        while ((self.event[dwellEnd]>(self.eventMaxima/2)) and (dwellEnd < (np.size(self.event,0) - 1))):
+        while ((self.event[dwellEnd] > (self.eventMaxima/2)) and (dwellEnd < (np.size(self.event, 0) - 1))):
             dwellEnd += 1
         self.eventDwellTime = (dwellEnd - dwellStart) * Event.dataRate
 
@@ -43,45 +46,45 @@ class Event:
             self._calculateRiseFallTime()
             self._calculateIntegral()
 
-    
-       
+
 class EventDetect:
-    def __init__(self) -> None:
-        self.count = 0
-        self.peakStart = 0
-        self.peakEnd = 0
-        self.threshold = 0
-        self.eventList = []
+    def __init__(self, _threshold) -> None:
+        self._count = 0
+        self._peakStart = 0
+        self._peakEnd = 0
+        self._eventList = []
+        if _threshold is None:
+            self._threshold = 0
+        else:
+            self._threshold = _threshold
 
-    def run(self,input :np.array,threshold : int) -> list:
-        data = input[1,:]
-        self.peaks = np.zeros(data.shape)
-        self.times = np.zeros(data.shape)
-        self.threshold = threshold
-        while(self.peakStart<(np.size(input,1)-2)):
-            if((data[self.peakStart+2] >= self.threshold) and (data[self.peakStart+2]>data[self.peakStart])):
-                self.peakEnd = self.peakStart
-                while data[self.peakEnd]>0:
-                    self.peakEnd += 1
-                
-                if (self.peakEnd>self.peakStart+2):
+    def run(self, input: np.array) -> list:
+        data = input
+        self._peaks = np.zeros(data.shape)
+        self._times = np.zeros(data.shape)
+        while (self._peakStart < (np.size(input)-2)):
+            if ((data[self._peakStart+2] >= self._threshold) and
+                    (data[self._peakStart+2] > data[self._peakStart])):
+                self._peakEnd = self._peakStart
+                while data[self._peakEnd] > 0:
+                    self._peakEnd += 1
+
+                if (self._peakEnd > self._peakStart+2):
                     e = Event()
-                    e.event = data[self.peakStart:self.peakEnd]
-                    e.startIndex = self.peakStart
-                    e.endIndex = self.peakEnd
-                    e.eventMaximaIndex = np.argmax(data[self.peakStart:self.peakEnd])
-                    e.eventMaxima = data[self.peakStart + e.eventMaximaIndex]
-                    e.eventDuration = self.peakEnd - self.peakStart
+                    e.event = data[self._peakStart:self._peakEnd]
+                    e.startIndex = self._peakStart
+                    e.endIndex = self._peakEnd
+                    e.eventMaximaIndex = np.argmax(
+                        data[self._peakStart:self._peakEnd])
+                    e.eventMaxima = data[self._peakStart + e.eventMaximaIndex]
+                    e.eventDuration = self._peakEnd - self._peakStart
 
-                    self.peaks[self.peakStart + e.eventMaximaIndex] = e.eventMaxima
-                    self.times[self.peakStart:self.peakEnd] = -10
+                    self._peaks[self._peakStart +
+                                e.eventMaximaIndex] = e.eventMaxima
+                    self._times[self._peakStart:self._peakEnd] = -10
 
-
-                    self.count += 1
-                    self.peakStart = self.peakEnd
-                    self.eventList.append(e)
-            self.peakStart +=1
-        return self.eventList, self.peaks, self.times
-
-                    
-
+                    self._count += 1
+                    self._peakStart = self._peakEnd
+                    self._eventList.append(e)
+            self._peakStart += 1
+        return self._eventList, self._peaks, self._times
