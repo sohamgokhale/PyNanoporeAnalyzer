@@ -9,7 +9,8 @@ class nanoporeData:
         self.channelCount = 0
         self.channelList = 0
         self.adcUnits = []
-        self.dataRate = 0
+        self.samplingFreq = 0
+        self.samplingTime = 0
         self.dataLengthSec = 0
         self.dataLengthMin = 0
         self.timeAxis = np.empty((1,))
@@ -43,7 +44,8 @@ class nanoporeData:
                 self.channelCount = abf.channelCount
                 self.channelList = abf.channelList
                 self.adcUnits = abf.adcUnits
-                self.dataRate = abf.dataRate
+                self.samplingFreq = abf.dataRate
+                self.samplingTime = 1/(abf.dataRate)
                 self.dataLengthSec = abf.dataLengthSec
                 self.dataLengthMin = abf.dataLengthMin
                 self.timeAxis = abf.sweepX

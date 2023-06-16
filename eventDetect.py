@@ -17,8 +17,6 @@ class Event:
         self.integral = 0
 
     def _calculateDwellTime(self):
-        print(str(self.event) + " : " + str(self.startIndex) +
-              " : " + str(np.size(self.event, 0)))
         dwellStart = self.eventMaximaIndex
         dwellEnd = self.eventMaximaIndex
         while ((self.event[dwellStart] > (self.eventMaxima/2)) and (dwellStart > 1)):
