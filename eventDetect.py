@@ -2,7 +2,7 @@ import numpy as np
 
 
 class Event:
-    dataRate = 1
+    _samplingTime = 1
 
     def __init__(self) -> None:
         self.startIndex = 0
@@ -23,10 +23,10 @@ class Event:
             dwellStart -= 1
         while ((self.event[dwellEnd] > (self.eventMaxima/2)) and (dwellEnd < (np.size(self.event, 0) - 1))):
             dwellEnd += 1
-        self.eventDwellTime = (dwellEnd - dwellStart) * Event.dataRate
+        self.eventDwellTime = (dwellEnd - dwellStart) * Event._samplingTime
 
     def _calculateRiseFallTime(self):
-        self.eventRiseTime = (self.eventMaximaIndex) * Event.dataRate
+        self.eventRiseTime = (self.eventMaximaIndex) * Event._samplingTime
         self.eventFallTime = (self.endIndex - self.eventMaximaIndex)
 
     def _calculateIntegral(self):
@@ -46,7 +46,8 @@ class Event:
 
 
 class EventDetect:
-    def __init__(self, _threshold) -> None:
+    _samplingTime = 1
+    def __init__(self, samplingTime, _threshold) -> None:
         self._count = 0
         self._peakStart = 0
         self._peakEnd = 0
@@ -55,6 +56,7 @@ class EventDetect:
             self._threshold = 0
         else:
             self._threshold = _threshold
+        _samplingTime = samplingTime
 
     def run(self, input: np.array) -> list:
         data = input
@@ -85,4 +87,5 @@ class EventDetect:
                     self._peakStart = self._peakEnd
                     self._eventList.append(e)
             self._peakStart += 1
+        e._samplingTime = EventDetect._samplingTime
         return self._eventList, self._peaks, self._times
