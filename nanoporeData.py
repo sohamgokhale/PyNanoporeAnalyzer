@@ -75,10 +75,10 @@ class nanoporeData:
         """ Load data from file."""
         if not nanoporeData._loaded:
             if (filename is None or filename == ""):
-                _loaded = False
+                nanoporeData._loaded = False
                 raise Exception("ERROR: No file name specified!")
             else:
-                _loaded = self._loadABF(filename)
+                nanoporeData._loaded = self._loadABF(filename)
         else:
             raise Exception(
                 "ERROR: Data already loaded. Call clear() function before trying to load new data.")
