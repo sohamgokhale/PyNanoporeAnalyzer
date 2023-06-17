@@ -60,16 +60,29 @@ class EventDetect:
 
     def run(self, input: np.array) -> list:
         data = input
+        iterator = 0
         self._peaks = np.zeros(data.shape)
         self._times = np.zeros(data.shape)
-        while (self._peakStart < (np.size(input)-2)):
-            if ((data[self._peakStart+2] >= self._threshold) and
-                    (data[self._peakStart+2] > data[self._peakStart])):
-                self._peakEnd = self._peakStart
+
+        print("inside eventDetect.run()")
+
+        while (iterator < input.size):
+            #print(">>>>inside while : " + str(iterator) + " : " + str(data[iterator]) + " : " + str(self._threshold))
+            if (data[iterator] >= self._threshold):
+                
+                self._peakStart = iterator
+                self._peakEnd = iterator
+
+                while data[self._peakStart] > 0:
+                    self._peakStart -= 1
+                    #print(">>>>>>>>peak start : " + str(self._peakStart))
+                
                 while data[self._peakEnd] > 0:
                     self._peakEnd += 1
 
-                if (self._peakEnd > self._peakStart+2):
+                #print(str(iterator) + " : " + str(self._peakStart) + " : " + str(self._peakEnd))
+
+                if (self._peakEnd > iterator):
                     e = Event()
                     e.event = data[self._peakStart:self._peakEnd]
                     e.startIndex = self._peakStart
@@ -84,8 +97,9 @@ class EventDetect:
                     self._times[self._peakStart:self._peakEnd] = -10
 
                     self._count += 1
-                    self._peakStart = self._peakEnd
+                    iterator = self._peakEnd
                     self._eventList.append(e)
-            self._peakStart += 1
+            iterator += 1
         e._samplingTime = EventDetect._samplingTime
+        print(self._count)
         return self._eventList, self._peaks, self._times
