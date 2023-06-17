@@ -1,3 +1,37 @@
+"""
+File    : nanoporeData
+Author  : Soham Gokhale - UoL MSc Individual Project
+
+Description:
+------------
+The class provides funtions to load ion channel readings from solid-state 
+nanopore sensors. Currently supports loading data from Axon Binary Format
+(ABF) files. The data and the parameters associated with it are loaded in
+corresponding class members.
+
+Attributes
+----------
+channelCount    :   Number of channels present in data file
+channelList     :   List of channels present in data file
+adcUnits        :   Units for each channel (if present in header)
+samplingFreq    :   Sampling frequency or sampling rate of the recorded data
+samplingTime    :   Sampling time or sampling interval of the recorded data
+dataLengthSec   :   Length of recording (in seconds)
+dataLengthMin   :   Length of recording (in minutes)
+timeAxis        :   Time axis values for the data
+timeUnits       :   Unit for time axis
+channel         :   ndarray containing samples for all channels present in data
+_loaded         :   static (class) variable to check if data has been loaded 
+
+Functions
+---------
+load(filename)              :   Load data from specified file
+clear()                     :   Clear loaded data
+getChannel(channel_number)  :   Returns np.array of specified channel's data
+
+"""
+
+
 import numpy as np
 import pyabf
 
@@ -6,6 +40,10 @@ class nanoporeData:
     _loaded = False
 
     def __init__(self, filename=""):
+        """ 
+        Initialize all attributes to zero. 
+        If filename is specified, proceed to load data.
+        """
         self.channelCount = 0
         self.channelList = 0
         self.adcUnits = []
@@ -20,18 +58,44 @@ class nanoporeData:
             self.load(filename)
 
     def getChannel(self, channel_number: int):
-        if (channel_number < self.channelCount) and (channel_number >= 0):
-            return self.channel[channel_number]
+        """ Load Data and Attributes if not loaded. All channels are loaded into 
+        channel array"""
+
+        if not nanoporeData._loaded:
+            raise Exception(
+                "ERROR: Data not loaded. Call load() function to load data.")
         else:
-            raise IndexError(
-                "Channel Number must be between 0 - "+str(self.channelCount-1))
+            if (channel_number < self.channelCount) and (channel_number >= 0):
+                return self.channel[channel_number]
+            else:
+                raise IndexError(
+                    "Channel Number must be between 0 - "+str(self.channelCount-1))
 
     def load(self, filename):
-        if (filename is None or filename == ""):
-            _loaded = False
-            raise Exception("ERROR: No file name specified!")
+        """ Load data from file."""
+        if not nanoporeData._loaded:
+            if (filename is None or filename == ""):
+                _loaded = False
+                raise Exception("ERROR: No file name specified!")
+            else:
+                _loaded = self._loadABF(filename)
         else:
-            _loaded = self._loadABF(filename)
+            raise Exception(
+                "ERROR: Data already loaded. Call clear() function before trying to load new data.")
+
+    def clear(self):
+        """ Clear all loaded data. """
+        self.channelCount = 0
+        self.channelList = 0
+        self.adcUnits = []
+        self.samplingFreq = 0
+        self.samplingTime = 0
+        self.dataLengthSec = 0
+        self.dataLengthMin = 0
+        self.timeAxis = np.empty((1,))
+        self.timeUnits = 0
+        self.channel = np.empty((1,))
+        nanoporeData._loaded = False
 
     def _loadABF(self, filename) -> bool:
         abf = pyabf.ABF(filename)
