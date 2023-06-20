@@ -41,8 +41,9 @@ class BaselineMovMean(_Baseline):
 
     """ Setup class variables: Window size Default(1000) """
     def __init__(self, windowSize: int = 1000) -> None:
-        self.windowSize = windowSize
+        self.windowSize = int(windowSize)
 
     """ Run filter to detect baseline """
     def run(self, input: np.array) -> np.array:
+        print("inside MovMean run()")
         return np.resize(np.convolve(input, np.ones(self.windowSize)/self.windowSize, mode='valid'), np.size(input))

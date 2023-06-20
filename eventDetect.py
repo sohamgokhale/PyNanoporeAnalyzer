@@ -147,7 +147,7 @@ class EventDetect:
 
     """ Initialize object fields"""
 
-    def __init__(self, samplingTime, _threshold) -> None:
+    def __init__(self, _threshold, samplingTime) -> None:
         self._count = 0
         self._peakStart = 0
         self._peakEnd = 0
@@ -161,7 +161,7 @@ class EventDetect:
     """ Run Method to detect events within signal array passed """
 
     def run(self, input: np.array) -> EventCollector:
-
+        print("inside EventDetect run()")
         iterator = 0                            # Start Iterator at zero
         # Create Empty arrays for storing
         self._peaks = np.zeros(input.shape)
@@ -196,7 +196,7 @@ class EventDetect:
 
                     e.eventMaximaIndex = np.argmax(
                         input[self._peakStart:self._peakEnd])
-                    
+
                     e.eventMaxima = input[self._peakStart + e.eventMaximaIndex]
                     e.eventDuration = self._peakEnd - self._peakStart
 
@@ -213,12 +213,12 @@ class EventDetect:
                     self._eventList.append(e)
 
             iterator += 1
-        
+
         # Collect event details in EventCollector Object
         ec.eventList = self._eventList
         ec.peaks = self._peaks
         ec.times = self._times
         ec.eventCount = self._count
         ec.unpack()
-        
+
         return ec

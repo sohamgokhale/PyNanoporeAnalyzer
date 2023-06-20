@@ -5,6 +5,7 @@ class SubtractAndFlip:
         self._flip = flip
 
     def run(self, input1 :np.array, input2 :np.array) -> np.array:
+        print("inside Sub&Flip run()")
         self.subtracted = input1-input2
         if(self._flip): 
             self.subtracted *= -1

@@ -30,9 +30,10 @@ class ButterworthLPF(_Filter):
         self.order = order
         self.cutoff = cutoff
         self.fs = samplingFreq
-        self.b, self.a = butter(order, cutoff, btype='low', fs=samplingFreq)
+        self.b, self.a = butter(int(order), int(cutoff), btype='low', fs=int(samplingFreq))
 
     """ Apply Butterworth low pass filter to data using calculated coefficients """
 
     def run(self, input: np.array) -> np.array:
+        print("inside ButterLPF run()")
         return filtfilt(self.b, self.a, input)

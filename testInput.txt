@@ -1,0 +1,26 @@
+# Block Declaration
+
+BLOCK Block1
+    TYPE nanoporeData
+    PARAMS Data_interim/Dimer_samples_-300mV.abf
+
+BLOCK Block2
+    TYPE ButterworthLPF
+    PARAMS 4 1600
+
+BLOCK Block3
+    TYPE BaselineMovMean
+    PARAMS 10000
+
+BLOCK Block4
+    TYPE SubtractAndFlip
+    PARAMS
+
+BLOCK Block5
+    TYPE EventDetect
+    PARAMS 50
+
+CONNECT Block1 Block2
+CONNECT Block2 Block3
+CONNECT Block3 Block4
+CONNECT Block4 Block5
