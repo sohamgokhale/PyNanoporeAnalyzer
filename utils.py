@@ -24,7 +24,7 @@ def ParseInput(path):
 
         if line.startswith('CONNECT'):
             block_definition_mode = False
-            connection_data = {'source': line.split()[1], 'destination': line.split()[2]}
+            connection_data = {'block': line.split()[1], 'inputs': line.split()[3:]}
             connection_configuration.append(connection_data)
             continue
 

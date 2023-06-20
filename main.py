@@ -63,17 +63,19 @@ if __name__ == "__main__":
     block_dict = {block_data['name']: block_instance for block_data, block_instance in zip(block_configuration, blocks)}
 
     outputs = {}
-    outputs["Block1"] = blocks[0].getChannel(0)
+    outputs["Source"] = blocks[0].getChannel(0)
     # Iterate over the connection configuration and establish the connections
     for connection_data in connection_configuration:
-        source_block = connection_data['source']
-        destination_block = connection_data['destination']
+        execution_block = connection_data['block']
+        inputList = connection_data['inputs']
+        inputs = []
 
         # Get the block instances involved in the connection
-        source_block_instance = block_dict.get(source_block)
-        destination_block_instance = block_dict.get(destination_block)
-
-        outputs[destination_block] = destination_block_instance.run(outputs.get(source_block))
+        execution_block_instance = block_dict.get(execution_block)
+        if(execution_block != "Source"):
+            for input in inputList:
+                inputs.append(outputs.get(input))
+            outputs[execution_block] = execution_block_instance.run(*inputs)
 
     
     #setup()

@@ -1,6 +1,6 @@
 # Block Declaration
 
-BLOCK Block1
+BLOCK Source
     TYPE nanoporeData
     PARAMS Data_interim/Dimer_samples_-300mV.abf
 
@@ -20,7 +20,8 @@ BLOCK Block5
     TYPE EventDetect
     PARAMS 50
 
-CONNECT Block1 Block2
-CONNECT Block2 Block3
-CONNECT Block3 Block4
-CONNECT Block4 Block5
+CONNECT Source INPUT 0
+CONNECT Block2 INPUT Source
+CONNECT Block3 INPUT Block2
+CONNECT Block4 INPUT Block2 Block3
+CONNECT Block5 INPUT Block4

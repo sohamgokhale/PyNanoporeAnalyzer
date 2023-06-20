@@ -155,8 +155,8 @@ class EventDetect:
         if _threshold is None:
             self._threshold = 0
         else:
-            self._threshold = _threshold
-        self._samplingTime = samplingTime
+            self._threshold = int(_threshold)
+        self._samplingTime = int(samplingTime)
 
     """ Run Method to detect events within signal array passed """
 
