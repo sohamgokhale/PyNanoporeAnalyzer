@@ -1,0 +1,41 @@
+# Block instantiation
+Source:
+  type: Source
+  class: nanoporeData
+  parameters:
+    - path: Data_interim/Dimer_samples_-300mV.abf
+    - channel: 0
+
+Block1:
+  type: Process
+  class: ButterworthLPF
+  parameters:
+    - order: 4
+    - cutoff: 1600
+    - samplingFreq: $Source.samplingFreq
+  inputs:
+    - $Source.getChannel
+
+Block2:
+  type: Process
+  class: BaselineMovMean
+  parameters:
+    - window: 10000
+  inputs:
+    - Block1
+
+Block3:
+  type: Process
+  class: SubtractAndFlip
+  inputs:
+    - Block1
+    - Block2
+
+Sink:
+  type: Sink
+  class: EventDetect
+  parameters:
+    - threshold: 50
+    - samplingTime: $Source.samplingTime
+  inputs:
+    - Block3

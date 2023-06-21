@@ -39,7 +39,7 @@ import pyabf
 class nanoporeData:
     _loaded = False
 
-    def __init__(self, filename=""):
+    def __init__(self, filename:str="",dataChannel:int=0) -> None:
         """ 
         Initialize all attributes to zero. 
         If filename is specified, proceed to load data.
@@ -54,10 +54,12 @@ class nanoporeData:
         self.timeAxis = np.empty((1,))
         self.timeUnits = 0
         self.channel = np.empty((1,))
+        self.dataChannel = dataChannel
         if (filename is not None or filename != ""):
             self.load(filename)
 
-    def getChannel(self, channel_number: int):
+    def getChannel(self):
+        channel_number = self.dataChannel
         """ Load Data and Attributes if not loaded. All channels are loaded into 
         channel array"""
 
