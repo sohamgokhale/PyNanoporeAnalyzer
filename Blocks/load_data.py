@@ -36,7 +36,7 @@ import numpy as np
 import pyabf
 
 
-class nanoporeData:
+class ABF_Data:
     _loaded = False
 
     def __init__(self, filename:str="",dataChannel:int=0) -> None:
@@ -63,7 +63,7 @@ class nanoporeData:
         """ Load Data and Attributes if not loaded. All channels are loaded into 
         channel array"""
 
-        if not nanoporeData._loaded:
+        if not ABF_Data._loaded:
             raise Exception(
                 "ERROR: Data not loaded. Call load() function to load data.")
         else:
@@ -75,12 +75,12 @@ class nanoporeData:
 
     def load(self, filename):
         """ Load data from file."""
-        if not nanoporeData._loaded:
+        if not ABF_Data._loaded:
             if (filename is None or filename == ""):
-                nanoporeData._loaded = False
+                ABF_Data._loaded = False
                 raise Exception("ERROR: No file name specified!")
             else:
-                nanoporeData._loaded = self._loadABF(filename)
+                ABF_Data._loaded = self._loadABF(filename)
         else:
             raise Exception(
                 "ERROR: Data already loaded. Call clear() function before trying to load new data.")
@@ -97,7 +97,7 @@ class nanoporeData:
         self.timeAxis = np.empty((1,))
         self.timeUnits = 0
         self.channel = np.empty((1,))
-        nanoporeData._loaded = False
+        ABF_Data._loaded = False
 
     def _loadABF(self, filename) -> bool:
         abf = pyabf.ABF(filename)

@@ -3,39 +3,46 @@ Source:
   type: Source
   class: nanoporeData
   parameters:
-    - path: Data_interim/Dimer_samples_-300mV.abf
-    - channel: 0
+    path: Data_interim/Dimer_samples_-300mV.abf
+    channel: 0
 
 Block1:
   type: Process
   class: ButterworthLPF
   parameters:
-    - order: 4
-    - cutoff: 1600
-    - samplingFreq: $Source.samplingFreq
+    order: 4
+    cutoff: 1600
+    samplingFreq: $Source.attr.samplingFreq
   inputs:
-    - $Source.getChannel
+    - $Source.attr.getChannel
 
 Block2:
   type: Process
   class: BaselineMovMean
   parameters:
-    - window: 10000
+    window: 10000
   inputs:
-    - Block1
+    - $Block1.output
 
 Block3:
   type: Process
   class: SubtractAndFlip
   inputs:
-    - Block1
-    - Block2
+    - $Block1.output
+    - $Block2.output
 
 Sink:
   type: Sink
   class: EventDetect
   parameters:
-    - threshold: 50
-    - samplingTime: $Source.samplingTime
+    threshold: 50
+    samplingTime: $Source.attr.samplingTime
   inputs:
-    - Block3
+    - $Block3.output
+
+Scatter:
+  type: Visualiser
+  class: Scatterplot
+  inputs:
+    - $Sink.output.Amplitudes
+    - $Sink.output.dwellTimes
