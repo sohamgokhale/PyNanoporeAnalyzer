@@ -8,7 +8,7 @@ Source:
 
 Block1:
   type: Process
-  class: ButterworthLPF
+  class: BesselLPF
   parameters:
     order: 4
     cutoff: 1600
@@ -40,9 +40,36 @@ Sink:
   inputs:
     - $Block3.output
 
-Scatter:
+Density:
   type: Visualiser
-  class: Scatterplot
+  class: DensityPlot
+  parameters:
+    resolution: 300
+    figure_options:
+      ylabel: Amplitude (pA) 
+      xlabel: Dwell Time (ms)
   inputs:
     - $Sink.output.Amplitudes
     - $Sink.output.dwellTimes
+
+Histogram:
+  type: Visualiser
+  class: Histogram
+  parameters:
+    binWidth: 1
+    figure_options:
+      title: Data Points Histogram
+  inputs:
+    - $Block3.output
+
+Plot:
+  type: Visualiser
+  class: FFTPlot
+  parameters:
+    samplingTime: $Source.attr.samplingTime
+    figure_options:
+      title: Signal FFT
+      ylabel: Magnitude
+      xlabel: Frequency (Hz)
+  inputs:
+    - $Block3.output

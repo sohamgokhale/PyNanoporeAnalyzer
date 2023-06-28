@@ -1,5 +1,6 @@
 import utils, config
 import argparse
+import matplotlib.pyplot as plt
 
 def setup(blockConfig):
     blocks = {}
@@ -25,6 +26,8 @@ def run(blockConfig,blocks):
             block_instance = blocks.get(blockData.get('name'))
             output = block_instance.run(*inputList)
             outputs.update({blockData.get('name'):output})
+
+    plt.show()
 
 def main():
     parser = argparse.ArgumentParser()

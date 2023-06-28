@@ -40,7 +40,6 @@ def decodeParams(blockData: dict, blocks: dict) -> list:
 def decodeInputs(blockData: dict, blocks: dict, outputs: dict) -> list:
     try:
         blockInputs = blockData.get('inputs')
-        print(blockInputs)
     except:
         print("No inputs found for ",blockData.get('name'))
         return []
