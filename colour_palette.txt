@@ -1,0 +1,11 @@
+# Colour blind friendly palette - Masataka Okabe, Kei Ito  
+# https://jfly.uni-koeln.de/color/
+
+Black (0,0,0)
+Orange (230,159,0)
+Sky_Blue (86,180,233)
+Green (0,158,115)
+Yellow (240,228,66)
+Blue (0,114,178)
+Red (213,94,0)
+Purple (204,121,167)
