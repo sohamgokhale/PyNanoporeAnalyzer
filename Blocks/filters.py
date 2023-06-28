@@ -7,7 +7,7 @@ Description:
 """
 
 from abc import ABC, abstractmethod
-from scipy.signal import butter, filtfilt
+from scipy.signal import bessel, butter, filtfilt
 import numpy as np
 
 
@@ -30,10 +30,33 @@ class ButterworthLPF(_Filter):
         self.order = order
         self.cutoff = cutoff
         self.fs = samplingFreq
-        self.b, self.a = butter(int(order), int(cutoff), btype='low', fs=int(samplingFreq))
+        self.b, self.a = butter(int(order), int(
+            cutoff), btype='low', fs=int(samplingFreq))
 
     """ Apply Butterworth low pass filter to data using calculated coefficients """
 
     def run(self, input: np.array) -> np.array:
         print("inside ButterLPF run()")
+        return filtfilt(self.b, self.a, input)
+
+
+class BesselLPF(_Filter):
+    """
+    Apply N-th order Bessel Low Pass Filter to remove high frequency
+    noise components from the data.
+    """
+
+    """ Setup Bessel filter by calculating coefficients """
+
+    def __init__(self, order: int, cutoff: float, samplingFreq: float) -> None:
+        self.order = order
+        self.cutoff = float(cutoff)
+        self.fs = samplingFreq
+        self.b, self.a = bessel(int(order), float(
+            cutoff), btype='low', fs=int(samplingFreq))
+
+    """ Apply Bessel low pass filter to data using calculated coefficients """
+
+    def run(self, input: np.array) -> np.array:
+        print("inside BesselLPF run()")
         return filtfilt(self.b, self.a, input)
