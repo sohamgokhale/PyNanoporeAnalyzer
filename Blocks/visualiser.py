@@ -2,6 +2,9 @@ import matplotlib.pyplot as plt
 from Blocks import signal_utils
 import numpy as np
 from scipy.stats import kde
+import seaborn as sns
+from palettable.scientific.sequential import Devon_20 as theme
+import matplotlib.colors as colors
 
 class Figure:
     def __init__(self) -> None:
@@ -21,7 +24,7 @@ class Scatterplot(Figure):
 
     def run(self,xAxis,yAxis) -> None:
         plt.figure()
-        plt.scatter(xAxis,yAxis)
+        plt.scatter(xAxis,yAxis,alpha=0.8,marker='.')
         self.decodeOptions()
 
 class TimePlot(Figure):
@@ -67,6 +70,16 @@ class DensityPlot(Figure):
         zi = k(np.vstack([xi.flatten(), yi.flatten()]))
 
         plt.figure()
-        plt.pcolormesh(xi, yi, zi.reshape(xi.shape), shading='auto',cmap=plt.cm.Blues)
+        plt.pcolormesh(xi, yi, zi.reshape(xi.shape), shading='nearest', cmap=theme.mpl_colormap.reversed())
         plt.colorbar()
+        self.decodeOptions()
+
+class ContourPlot(Figure):
+    def __init__(self, figure_options : dict) -> None:
+        self.figOpt = figure_options
+        
+    def run(self, xAxis, yAxis):
+        xAxis = np.array(xAxis)
+        yAxis = np.array(yAxis)
+        sns.kdeplot(x=xAxis, y=yAxis, cmap=theme.mpl_colormap.reversed(), fill=True)
         self.decodeOptions()
