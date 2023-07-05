@@ -4,6 +4,7 @@ Author  : Soham Gokhale - UoL MSc Individual Project
 """
 
 import numpy as np
+from scipy.stats import norm
 
 """
 class Event
@@ -155,13 +156,18 @@ class EventDetect:
         if _threshold is None:
             self._threshold = 0
         else:
-            self._threshold = int(_threshold)
+            self._threshold = _threshold
         self._samplingTime = int(samplingTime)
 
     """ Run Method to detect events within signal array passed """
 
     def run(self, input: np.array) -> EventCollector:
         print("inside EventDetect run()")
+
+        if self._threshold == 'Auto':
+            self._thresholdGaussianSigma(input)
+
+
         iterator = 0                            # Start Iterator at zero
         # Create Empty arrays for storing
         self._peaks = np.zeros(input.shape)
@@ -220,5 +226,12 @@ class EventDetect:
         ec.times = self._times
         ec.eventCount = self._count
         ec.unpack()
+        print("Events found: ",str(self._count))
 
         return ec
+    
+
+    def _thresholdGaussianSigma(self, input: np.array) -> None:
+        mu, sigma = norm.fit(input)
+        self._threshold = 3*sigma
+        print("Mu: ",mu,"Sigma: ",sigma,"Threshold: ",self._threshold)
