@@ -8,10 +8,10 @@ Source:
 
 Block1:
   type: Process
-  class: BesselLPF
+  class: ButterworthLPF
   parameters:
-    order: 4
-    cutoff: 1600
+    order: 2
+    cutoff: 10000
     samplingFreq: $Source.attr.samplingFreq
   inputs:
     - $Source.attr.getChannel
@@ -20,7 +20,7 @@ Block2:
   type: Process
   class: BaselineMovMean
   parameters:
-    window: 10000
+    window: 30000
   inputs:
     - $Block1.output
 

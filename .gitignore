@@ -165,3 +165,10 @@ cython_debug/
 
 # Ignore VS Code files
 .vscode/
+
+# Ignore generated LaTeX files
+*.aux
+*.blg
+*.fdb_*
+*.fls
+*.gz

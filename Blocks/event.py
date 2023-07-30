@@ -233,5 +233,5 @@ class EventDetect:
 
     def _thresholdGaussianSigma(self, input: np.array) -> None:
         mu, sigma = norm.fit(input)
-        self._threshold = 3*sigma
+        self._threshold = 5*sigma
         print("Mu: ",mu,"Sigma: ",sigma,"Threshold: ",self._threshold)
