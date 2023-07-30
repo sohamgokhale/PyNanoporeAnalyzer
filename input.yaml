@@ -17,7 +17,6 @@ Block1:
     - $Source.attr.getChannel
 
 Block2:
-  type: Process
   class: BaselineMovMean
   parameters:
     window: 30000

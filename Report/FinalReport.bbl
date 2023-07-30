@@ -104,4 +104,7 @@ S.~Shekar, C.-C. Chien, A.~Hartel, P.~Ong, O.~B. Clarke, A.~Marks, M.~Drndic,
 \bibitem{OfficialYAMLWeb}
 ``The {{Official YAML Web Site}},'' https://yaml.org/.
 
+\bibitem{hardenPyABF2022}
+S.~W. Harden, ``{{pyABF}} 2.3.5,'' https://pypi.org/project/pyabf, 2022.
+
 \end{thebibliography}
