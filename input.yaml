@@ -3,7 +3,7 @@ Source:
   type: Source
   class: nanoporeData
   parameters:
-    path: Data_interim/Dimer_samples_-300mV.abf
+    path: Data/2x2/2x2_samples_-300mV.abf
     channel: 0
 
 Block1:
@@ -17,6 +17,7 @@ Block1:
     - $Source.attr.getChannel
 
 Block2:
+  type: Process
   class: BaselineMovMean
   parameters:
     window: 30000
@@ -39,29 +40,29 @@ Sink:
   inputs:
     - $Block3.output
 
-# Density:
-#   type: Visualiser
-#   class: DensityPlot
-#   parameters:
-#     figure: 4
-#     resolution: 300
-#     figure_options:
-#       ylabel: Amplitude (pA) 
-#       xlabel: Dwell Time (ms)
-#   inputs:
-#     - $Sink.output.Amplitudes
-#     - $Sink.output.dwellTimes
-
-Histogram:
+Density:
   type: Visualiser
-  class: Histogram
+  class: ContourPlot
   parameters:
-    figure_number: 1
-    binWidth: 1
+    figure: 4
     figure_options:
-      title: Data Points Histogram
+      ylabel: Amplitude (pA) 
+      xlabel: Dwell Time (ms)
   inputs:
-    - $Block3.output
+    - $Sink.output.dwellTimes
+    - $Sink.output.Amplitudes
+
+# Histogram:
+#   type: Visualiser
+#   class: Histogram
+#   parameters:
+#     figure_number: 1
+#     binWidth: 1000
+#     fitGauss: False
+#     figure_options:
+#       title: Data Points Histogram
+#   inputs:
+#     - $Sink.output.Integrals
 
 # Plot:
 #   type: Visualiser
@@ -101,3 +102,16 @@ Histogram:
 #   inputs:
 #     - $Source.attr.timeAxis
 #     - $Block2.output
+
+# Plot4:
+#   type: Visualiser
+#   class: TimePlot
+#   parameters:
+#     figure_number: 1
+#     figure_options:
+#       title: Baseline Subtracted Signal
+#       ylabel: Current (pA)
+#       xlabel: Time (sec)
+#   inputs:
+#     - $Source.attr.timeAxis
+#     - $Block3.output

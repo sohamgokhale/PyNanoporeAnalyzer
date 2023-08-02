@@ -1,0 +1,47 @@
+%% Detect Par File
+%% Versionver. 0.98
+%% Filter Freq
+10000
+%% Alpha*Beta
+0.1
+%% Voltage (mV)
+-300
+%% Save Unfiltered
+1
+%% Save OpenNanopore Files
+0
+%% Window Size (points)
+30000
+%% Peak Det Factor
+7
+%% Min Dwell Time (ms)
+0.01
+%% Max Dwell Time (ms)
+100
+%% Min Events Gap
+2
+%% Extra Points (points)
+100
+%% Number of Iterations
+0
+%% Filter Type (0-none 1-gauss 2-butter2 3-butter4)
+2
+%% Moving STD Win Size
+1000
+%% File Type
+8
+%% Baseline Method
+1
+%% Baseline Value
+-5650.7624
+%% Sigma Method
+4
+%% Sigma Value
+4.3298
+%% STD Hist Bins
+108122
+%% Current Hist Bins
+2000
+%% Event Type (1-down 2-up 3-both)
+1
+%% END PAR FILE %%

@@ -25,7 +25,7 @@ class Scatterplot(Figure):
 
     def run(self, xAxis, yAxis) -> None:
         plt.figure(self.figNo)
-        plt.scatter(xAxis, yAxis, alpha=0.8, marker='.')
+        plt.scatter(xAxis, yAxis, alpha=0.5, marker='o')
         self.decodeOptions()
 
 
@@ -54,19 +54,21 @@ class FFTPlot(Figure):
 
 
 class Histogram(Figure):
-    def __init__(self, figure_no, binSize, figure_options: dict) -> None:
+    def __init__(self, figure_no, binSize, fitGauss: bool, figure_options: dict) -> None:
         self.figNo = figure_no
         self.binSize = binSize
         self.figOpt = figure_options
+        self.fitGauss = fitGauss
 
     def run(self, data) -> None:
         plt.figure(self.figNo)
 
         mu, sigma = norm.fit(data)
         n, bins, patches = plt.hist(data, bins=np.arange(
-            min(data), max(data) + self.binSize, self.binSize), density=True)
-        gaussian = norm.pdf(bins, loc=mu,scale=sigma)
-        plt.plot(bins, gaussian)
+            min(data), max(data) + self.binSize, self.binSize), density=True, ec='black',lw=0.5)
+        if(self.fitGauss): 
+            gaussian = norm.pdf(bins, loc=mu,scale=sigma)
+            plt.plot(bins, gaussian)
 
         self.decodeOptions()
 

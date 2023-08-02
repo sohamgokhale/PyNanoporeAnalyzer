@@ -60,23 +60,26 @@ class Event:
     """ Calculate Dwell Time of the event from the event array """
 
     def _calculateDwellTime(self) -> None:
-        dwellStart = self.eventMaximaIndex
-        dwellEnd = self.eventMaximaIndex
+        self._dwellStart = self.eventMaximaIndex
+        self._dwellEnd = self.eventMaximaIndex
 
-        while ((self.event[dwellStart] > (self.eventMaxima/2))
-               and (dwellStart > 1)):
-            dwellStart -= 1
+        while ((self.event[self._dwellStart] > (self.eventMaxima/2))
+               and (self._dwellStart > 1)):
+            self._dwellStart -= 1
 
-        while ((self.event[dwellEnd] > (self.eventMaxima/2))
-               and (dwellEnd < (np.size(self.event, 0) - 1))):
-            dwellEnd += 1
-        self.eventDwellTime = (dwellEnd - dwellStart) * Event._samplingTime
+        while ((self.event[self._dwellEnd] > (self.eventMaxima/2))
+               and (self._dwellEnd < (np.size(self.event, 0) - 1))):
+            self._dwellEnd += 1
+        self.eventDwellTime = (
+            self._dwellEnd - self._dwellStart) * Event._samplingTime * 1000  # Multiplied by 1000 to convert to milliseconds
 
     """ Calculate Rise and Fall Times of the event from the event array """
 
     def _calculateRiseFallTime(self) -> None:
-        self.eventRiseTime = (self.eventMaximaIndex) * Event._samplingTime
-        self.eventFallTime = (self.endIndex - self.eventMaximaIndex)
+        self.eventRiseTime = (self.eventMaximaIndex -
+                              self.startIndex) * Event._samplingTime * 1000
+        self.eventFallTime = (
+            self.endIndex - self.eventMaximaIndex) * Event._samplingTime * 1000
 
     """ Calculate Integral of the event from the event array """
 
@@ -120,6 +123,7 @@ class EventCollector:
         self.RiseTimes = []
         self.FallTimes = []
         self.Integrals = []
+        self.durations = []
         self.eventCount = 0
 
     def unpack(self) -> None:
@@ -130,6 +134,7 @@ class EventCollector:
             self.RiseTimes.append(event.eventRiseTime)
             self.FallTimes.append(event.eventFallTime)
             self.Integrals.append(event.integral)
+            self.durations.append(event.eventDuration)
 
 
 """
@@ -157,7 +162,7 @@ class EventDetect:
             self._threshold = 0
         else:
             self._threshold = _threshold
-        self._samplingTime = int(samplingTime)
+        self._samplingTime = float(samplingTime)
 
     """ Run Method to detect events within signal array passed """
 
@@ -166,7 +171,6 @@ class EventDetect:
 
         if self._threshold == 'Auto':
             self._thresholdGaussianSigma(input)
-
 
         iterator = 0                            # Start Iterator at zero
         # Create Empty arrays for storing
@@ -204,7 +208,8 @@ class EventDetect:
                         input[self._peakStart:self._peakEnd])
 
                     e.eventMaxima = input[self._peakStart + e.eventMaximaIndex]
-                    e.eventDuration = self._peakEnd - self._peakStart
+                    e.eventDuration = (
+                        self._peakEnd - self._peakStart) * self._samplingTime * 1000
 
                     self._peaks[self._peakStart +
                                 e.eventMaximaIndex] = e.eventMaxima
@@ -226,12 +231,10 @@ class EventDetect:
         ec.times = self._times
         ec.eventCount = self._count
         ec.unpack()
-        print("Events found: ",str(self._count))
+        print("Events found: ", str(self._count))
 
         return ec
-    
 
     def _thresholdGaussianSigma(self, input: np.array) -> None:
         mu, sigma = norm.fit(input)
         self._threshold = 5*sigma
-        print("Mu: ",mu,"Sigma: ",sigma,"Threshold: ",self._threshold)

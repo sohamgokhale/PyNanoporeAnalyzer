@@ -30,8 +30,8 @@ class ButterworthLPF(_Filter):
         self.order = order
         self.cutoff = cutoff
         self.fs = samplingFreq
-        self.b, self.a = butter(int(order), int(
-            cutoff), btype='low', fs=int(samplingFreq))
+        self.b, self.a = butter(int(order), float(
+            cutoff), btype='low', fs=float(samplingFreq))
 
     """ Apply Butterworth low pass filter to data using calculated coefficients """
 
@@ -53,7 +53,7 @@ class BesselLPF(_Filter):
         self.cutoff = float(cutoff)
         self.fs = samplingFreq
         self.b, self.a = bessel(int(order), float(
-            cutoff), btype='low', fs=int(samplingFreq))
+            cutoff), btype='low', fs=float(samplingFreq))
 
     """ Apply Bessel low pass filter to data using calculated coefficients """
 

@@ -107,4 +107,26 @@ S.~Shekar, C.-C. Chien, A.~Hartel, P.~Ong, O.~B. Clarke, A.~Marks, M.~Drndic,
 \bibitem{hardenPyABF2022}
 S.~W. Harden, ``{{pyABF}} 2.3.5,'' https://pypi.org/project/pyabf, 2022.
 
+\bibitem{colquhounFittingStatisticalAnalysis1983}
+D.~Colquhoun and F.~J. Sigworth, ``Fitting and {{Statistical Analysis}} of
+  {{Single-Channel Records}},'' in \emph{Single-{{Channel Recording}}},
+  B.~Sakmann and E.~Neher, Eds.\hskip 1em plus 0.5em minus 0.4em\relax {Boston,
+  MA}: {Springer US}, 1983, pp. 191--263.
+
+\bibitem{smithScientistEngineerGuide1997}
+S.~W. Smith, \emph{The {{Scientist}} and {{Engineer}}'s {{Guide}} to {{Digital
+  Signal Processing}}}, 1st~ed.\hskip 1em plus 0.5em minus 0.4em\relax
+  {California Technical Publishing}, 1997, Jan.
+
+\bibitem{ichiharaColorUniversalDesign2008}
+Y.~G. Ichihara, M.~Okabe, K.~Iga, Y.~Tanaka, K.~Musha, and K.~Ito, ``Color
+  universal design: The selection of four easily distinguishable colors for all
+  color vision types,'' in \emph{Electronic {{Imaging}} 2008}, R.~Eschbach,
+  G.~G. Marcu, and S.~Tominaga, Eds., {San Jose, CA}, Jan. 2008, p. 68070O.
+
+\bibitem{confederatNanoporeFingerprintingSupramolecular2022}
+S.~Confederat, I.~Sandei, G.~Mohanan, C.~W{\"a}lti, and P.~Actis, ``Nanopore
+  fingerprinting of supramolecular {{DNA}} nanostructures,'' \emph{Biophysical
+  Journal}, vol. 121, no.~24, pp. 4882--4891, Dec. 2022.
+
 \end{thebibliography}

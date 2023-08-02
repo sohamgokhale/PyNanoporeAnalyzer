@@ -2,6 +2,7 @@
 \usepackage{amsmath,amsfonts}
 \usepackage{algorithmic}
 \usepackage{algorithm}
+\usepackage{alphabeta}
 \usepackage{array}
 \usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
 \usepackage{textcomp}
@@ -68,7 +69,7 @@ As shown in Fig. 1, the initial proposed structure of the software application w
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=2.5in]{TypSigFlow.png}
+\includegraphics[width=3in]{TypSigFlow.png}
 \caption{Typical Signal Processing Flow for Solid-State Nanopore Data}
 \label{fig_1}
 \end{figure}
@@ -86,7 +87,7 @@ In order to provide the required flexibility to the signal processing flow, each
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=2.5in]{SW-Arch.png}
+\includegraphics[width=3in]{SW-Arch.png}
 \caption{Software architecture of PyNanoporeAnalyzer}
 \label{fig_2}
 \end{figure}
@@ -100,7 +101,7 @@ The application therefore does not follow a fixed sequence of processing stages.
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=2.5in]{Block.png}
+\includegraphics[width=3in]{Block.png}
 \caption{General Structure of a Block}
 \label{fig_3}
 \end{figure}
@@ -111,7 +112,7 @@ All blocks follow a uniform fundamental structure, thereby enabling the applicat
 {\bf{Outputs}} of the block are values returned by the block. Outputs of a block will only contain the processed signal. By having an expected return value type, it becomes easier to rearrange blocks in the signal chain dynamically. However, there may be more than one values generated during a blocks execution. Even in this case only the processed signal is returned as the output. \\
 {\bf{Attributes}} are all the internally generated values by a block during its execution. These blocks may be useful for other blocks for their operation. For example, the event detection block stores the various features of the signal such as event amplitude, dwell time etc. as attributes. These attributes may be taken as input by other blocks, especially visualisation blocks.
 
-It is not necessary that all blocks will have parameters, attributes or even inputs and outputs. A source blocks that loads data will not have any inputs where the path to data file might be the sole parameter. This block will have the extracted signal as its output which can be passed to further blocks for processing. Conversely, block responsible for feature extraction will not have any output as all the processing needs to be ideally done before this step. All the features will be stored as attributes and the block will act as a signal sink. Some blocks may even take attributes of other blocks as inputs. Visualisation blocks are good examples of this where they can have the extracted features and not the signal itself as inputs. As a general rule, for all blocks involved in signal processing, the inputs and outputs must contain the signal itself while using parameters and attributes for any other data associated with the signal. Visualisation blocks however, can have any data as input as they do not perform any operations on the it directly. This is just a general guideline and the application does not force the user to follow it.
+It is not necessary that all blocks will have parameters, attributes, inputs or outputs. There are four types of blocks in PyNanoporeAnalyzer - \textit{source, process, sink, visualisation}. A \textit{source} blocks that loads data will not have any inputs where the path to data file might be the sole parameter. This type of block will have the extracted signal as its output which can be passed to further blocks for processing. Conversely, block responsible for feature extraction will not have any output as all the processing needs to be ideally done before this step. All the features will be stored as attributes and the block will act as a signal \textit{sink}. Some blocks may even take attributes of other blocks as inputs. Visualisation blocks are good examples of this where they can have the extracted features and not the signal itself as inputs. As a general rule, all blocks involved in signal processing will be of \textit{process} type. The inputs and outputs of such blocks must contain the only the signal while using parameters and attributes for any other data associated with the signal. Visualisation blocks however, can have any data as input as they do not perform any operations on the it directly. This is just a general guideline and the application does not force the user to follow it. However, the application handles the blocks in a slightly different manner depending on the type.
 
 \section{Implementation}
 \subsection{Input File}
@@ -125,9 +126,66 @@ Each block definition follows the structure shown in Listing 1, wherein a unique
 PyNanoporeAnalyzer supports the ABF2 version of the Axon Binary Format which is a popular file format for storing binary data recorded during biomedical experiments. Axon Instruments acquire data in many different modes however, nanopore experiment data is generally recorded in gap free mode which continuously captures data over a fixed time with a uniform sampling rate. This is the only supported ABF mode by PyNanoporeAnalyzer. The application provides the \textit{ABF\_Data} class which acts as a block to load the data. The \textit{ABF\_Data} class uses the pyABF library \cite{hardenPyABF2022} to load the recorded ion channel readings and the various fields stored in the ABF file header. These fields contain useful information such number of recorded channels, their units, sampling rate used, length of data etc. These data fields are exposed as the block's attributes to be used by other blocks in the chain later. The path to the abf file must be given as a parameter to this block. During instantiation, the block validates if a file name is given and that the file is present on given path. It also validates if the data is recorded in gap free mode by checking the ABF header. During execution, the block loads all the recorded channels and related fields.
 
 \subsection{Filters}
+The PyNanoporeAnalyzer package provides two basic filter blocks for denoising the signal. These are Butterworth and Bessel low pass filters. Simple low pass filters are often enough if the signal to noise ratio (SNR) is high enough \cite{plesaDataAnalysisMethods2015,wenGuideSignalProcessing2021}. Bessel filters have uniform group delay characteristics which make them suitable for nanopore applications \cite{colquhounFittingStatisticalAnalysis1983,shekarWaveletDenoisingHighBandwidth2019}. Blocks for wavelet denoising filters or Hidden Markov Models can be added to the software. Both these method have shown improved results for low SNR signals \cite{shekarWaveletDenoisingHighBandwidth2019}. Both these filter blocks take the filter order, cutoff frequency and sampling frequency of the data as parameters. The blocks generate the IIR filter coefficients based on these parameters. The coefficients are then used for filtering the signal.
 
+\subsection{Baseline detection}
+A moving window average method is used for baseline detection. This forms a low pass filter in the time domain that removes all the translocation event spikes \cite{smithScientistEngineerGuide1997}. A larger window size will be less susceptible to the influence of the events but will be worse at tracking changes to the baseline, especially sudden baseline shifts. Conversely, smaller window size can track baseline changes but will also be influenced by the event spikes.The window size can be specified by the user as a parameter to the \textit{BaselineMovMean} class block. The moving average filter is achieved by convolving the input signal with a \textit{rect} signal whose length is equal to the size of the window and amplitude of each element is equal to reciprocal of window size. The efficiency of this method however relies on the selection of optimum window size. Altermative iterative methods have been proposed in order to improve baseline detection \cite{plesaDataAnalysisMethods2015,wenGuideSignalProcessing2021}. However, moving window average is a very simple method that provides acceptable level of results with low computational complexity.
 
+The application also provides supplementary block for subtracting two signals and flipping the result. The original signal and the detected baseline can be input to the \textit{SubtractAndFlip} class block to subtract the baseline from the signal. This makes the signal uniform allowing the use of a constant threshold value for detecting events. 
 
+\subsection{Event Detection and Feature Extraction}
+The amplitude threshold based detection method is used to detect translocation events in the recorded nanopore data. When the  current value crosses a predefined threshold, the application registers it as an event. It then backtracks to the sample where the signal deviated from the baseline. This is considered the start of the event. The event encompasses the period from when the signal first departed from the baseline level until its return to the baseline level. The \textit{EventDetect} class provides the block detect all events in a given signal using this method. During event detection, the event maxima and event duration (baseline to baseline) is also recorded. The \textit{Event} class provides template to store the event trace along with it's features. Once the trace is extracted, various features in the events viz. dwell time (Full width at Half maximum), event rise time (baseline to maxima), event fall time (maxima to baseline) and event trace integral (blocked charge) are extracted using the \textit{Event} class functions. All events are appended to the \textit{EventCollector} class object that creates a list of all events and also provides attributes to access lists of particular feature for all events. This helps in visualisation, for example to plot a histogram of event amplitudes.
+
+The threshold value can be a user specified fixed numeric value or can be calculated automatically by the software. The automatic threshold is selected as a multiple of the rms noise levels ($\sigma$), typically 5$\sigma$ \cite{plesaDataAnalysisMethods2015}. This multiplicative factor can be modified by the user. Certain factors such as an unstable baseline that can interfere with the reliability of the technique, however, subtracting the baseline from the signal before calculating the threshold can nullify this. 
+
+\subsection{Visualisation}
+There are numerous different data visualisation options provided with the PyNanoporeAnalyzer application which are as follows:
+
+\subsubsection{Time domain plot}
+The \textit{TimePlot} class provides block to plot a trace in the time domain. This is generally an amplitude vs time plot where the units of both axis and their resolution can be specified by the user.
+
+\subsubsection{Frequency domain plot}
+The \textit{FFTPlot} class provides block to plot a trace in the frequency domain. The block takes FFT arrays for the X-axis and Y-axis. A trace can be converted to frequency domain by using the \textit{sigFFT} class which returns the magnitude and frequency axis for the FFT of a signal.
+
+\subsubsection{Histogram}
+It is possible to plot Histograms by using the \textit{Histogram} class. The bin size for histograms can be set by user using the \textit{binWidth} parameter. This block also provides the option to fit the data to a Gaussian PDF and plots it over the histogram.
+
+\subsubsection{Scatterplot}
+Scatterplots are powerful visualization tools to look at data in two dimensions to find patterns, clusters and outliers. The \textit{Scatterplot} class can be invoked to display a scatterplot of any two event features which can be passed as input to this block.
+
+\subsubsection{Density/Contour plot}
+Density plot and contour plots are two alternatives ways to visualise data scatter. Similar to a scatterplot they show distribution of data points across two axes. They differ, however, in the presentation of this data. While scatterplots simply place a point for each event, density and contour plots change the colour of the point to indicate the concentration of points at a given location. This almost adds a third dimension to the data giving information about the population density. Contour plots go a step beyond and highlight contours around regions of same density, giving defined outlines to population groups. \textit{DensityPlot} and \textit{ContourPlot} classes provide blocks to generate such plots.  
+
+\begin{lstlisting}[caption={Specifying Figure Options Example}]
+Plot:
+   class: FFTPlot
+   parameters:
+     figure_number: 2
+     figure_options:
+       title: Signal FFT
+       ylabel: Magnitude
+       xlabel: Frequency (Hz)
+   inputs:
+     - $Block3.output
+\end{lstlisting}
+
+All visualisation plots are generated using the python \textit{matplotlib} package. As such there are multiple figure options available to customize figures such as giving it Title, adding axis labels etc. These can be specified in the input file by nesting all options under the \textit{figure\_options} tag. Listing 2 shows example input for specifying figure options under parameters. It is also possible to provide figure number for each figure. This allows the user to overlay multiple plots by using the same figure number across multiple blocks. However, care must be taken to ensure all overlayed plots have common axes. In order to ensure accessibility, a colour blind friendly palette is chosen as the default for all figures \cite{ichiharaColorUniversalDesign2008}.
+
+\section{Results}
+The performance of the PyNanoporeAnalyzer software was evaluated using the experimental recordings of supermolecular DNA nanostructures translocation events through nanopores. This data set was originally generated for another study at University of Leeds \cite{confederatNanoporeFingerprintingSupramolecular2022}. The particular trace used here corresponds to a DNA origami dimer samples. \footnote[1]{All data sets  were generated previously at University of Leeds for the study “Nanopore fingerprinting of supramolecular DNA nanostructures” by S. Confederat et. al. \cite{confederatNanoporeFingerprintingSupramolecular2022}} The original study used the Transalyzer software developed by Plesa and Dekker at TU Delft \cite{plesaDataAnalysisMethods2015} for analysis of the signal. In order ensure fair comparison, a similar signal flow was used in both softwares and all parameters were chosen same as the original study.
+
+Transalyzer uses a flow similar to that described in Fig. 1. The original study used an event detection threshold of 7$\sigma$. Any parameters not mentioned in the original study were assumed to be the default values used by Transalyzer. The input file used to configure PyNanoporeAnalyzer has been provided in the appendix but follows the following general steps:
+\begin{enumerate}{}{}
+    \item {Load Data from ABF file.}
+    \item {Butterworth LPF Filter: 2nd Order with 20KHz cutoff frequency.}
+    \item {Baseline Detection: Moving window average with window size 30000.}
+    \item {Subtract Baseline from original signal and flip for detecting peaks.}
+    \item {Fit data histogram to Gaussian PDF to calculate $\sigma$. Set threshold to 7$\sigma$ level.}
+    \item {Detect events and extract features}
+\end{enumerate}
+Multiple visualisation blocks have been added at various stages in the signal chain to allow better visualising of data.
+
+Fig.
 
 
 \bibliography{Bibliography}
