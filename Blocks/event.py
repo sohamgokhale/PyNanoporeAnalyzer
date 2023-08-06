@@ -71,20 +71,25 @@ class Event:
                and (self._dwellEnd < (np.size(self.event, 0) - 1))):
             self._dwellEnd += 1
         self.eventDwellTime = (
-            self._dwellEnd - self._dwellStart) * Event._samplingTime * 1000  # Multiplied by 1000 to convert to milliseconds
+            self._dwellEnd - self._dwellStart) * Event._samplingTime * 1000
+        # Multiplied by 1000 to convert to milliseconds
 
     """ Calculate Rise and Fall Times of the event from the event array """
 
     def _calculateRiseFallTime(self) -> None:
-        self.eventRiseTime = (self.eventMaximaIndex -
-                              self.startIndex) * Event._samplingTime * 1000
+        """
+        startIndex is the index of event in Master Trace. 
+        eventMaximaIndex is index of maxima in the event trace.
+        Therefore eventMaximaIndex * sampling time = Rise time
+        """
+        self.eventRiseTime = (self.eventMaximaIndex) * Event._samplingTime * 1000
         self.eventFallTime = (
-            self.endIndex - self.eventMaximaIndex) * Event._samplingTime * 1000
+            self.endIndex - self.startIndex - self.eventMaximaIndex) * Event._samplingTime * 1000
 
     """ Calculate Integral of the event from the event array """
 
     def _calculateIntegral(self) -> None:
-        self.integral = np.sum(self.event)
+        self.integral = np.sum(self.event)/100
 
     """ Validate id event has been correctly extracted and calculate features """
 
@@ -192,7 +197,7 @@ class EventDetect:
                     self._peakStart -= 1
 
                 # move forward to find end of event
-                while input[self._peakEnd] > 0:
+                while input[self._peakEnd] > 0 or self._peakEnd == input.size:
                     self._peakEnd += 1
 
                 # collect various event details

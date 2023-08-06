@@ -101,9 +101,6 @@ S.~Shekar, C.-C. Chien, A.~Hartel, P.~Ong, O.~B. Clarke, A.~Marks, M.~Drndic,
   {{Ion-Channel Signals}},'' \emph{Nano Letters}, vol.~19, no.~2, pp.
   1090--1097, Feb. 2019.
 
-\bibitem{OfficialYAMLWeb}
-``The {{Official YAML Web Site}},'' https://yaml.org/.
-
 \bibitem{hardenPyABF2022}
 S.~W. Harden, ``{{pyABF}} 2.3.5,'' https://pypi.org/project/pyabf, 2022.
 
@@ -128,5 +125,11 @@ Y.~G. Ichihara, M.~Okabe, K.~Iga, Y.~Tanaka, K.~Musha, and K.~Ito, ``Color
 S.~Confederat, I.~Sandei, G.~Mohanan, C.~W{\"a}lti, and P.~Actis, ``Nanopore
   fingerprinting of supramolecular {{DNA}} nanostructures,'' \emph{Biophysical
   Journal}, vol. 121, no.~24, pp. 4882--4891, Dec. 2022.
+
+\bibitem{zhaoAutomatedAnalysisNanoImpact2023}
+Z.~Zhao, A.~Naha, S.~Ganguli, and A.~Sekretareva, ``Automated {{Analysis}} of
+  {{Nano-Impact Single-Entity Electrochemistry Signals}} using {{Unsupervised
+  Machine Learning}} and {{Template Matching}},'' {Chemistry}, Preprint, Jun.
+  2023.
 
 \end{thebibliography}

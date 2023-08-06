@@ -3,7 +3,7 @@ Source:
   type: Source
   class: nanoporeData
   parameters:
-    path: Data/2x2/2x2_samples_-300mV.abf
+    path: Data/Trimer/Trimer_samples_-300mV.abf
     channel: 0
 
 Block1:
@@ -42,25 +42,28 @@ Sink:
 
 Density:
   type: Visualiser
-  class: ContourPlot
+  class: DensityPlot
   parameters:
     figure: 4
+    resolution: 300
     figure_options:
-      ylabel: Amplitude (pA) 
       xlabel: Dwell Time (ms)
+      ylabel: Amplitude (pA)
   inputs:
     - $Sink.output.dwellTimes
     - $Sink.output.Amplitudes
+
 
 # Histogram:
 #   type: Visualiser
 #   class: Histogram
 #   parameters:
 #     figure_number: 1
-#     binWidth: 1000
+#     binWidth: 10
 #     fitGauss: False
 #     figure_options:
-#       title: Data Points Histogram
+#       xlabel: Equivalent Charge Surplus (pC)
+#       ylabel: Normalised Count
 #   inputs:
 #     - $Sink.output.Integrals
 
