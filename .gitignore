@@ -173,5 +173,9 @@ cython_debug/
 *.fls
 *.gz
 *.bak
-
 ~*
+*.tex
+*.bst
+*.cls
+*.bib
+*imgs/*
