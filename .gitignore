@@ -178,4 +178,5 @@ cython_debug/
 *.bst
 *.cls
 *.bib
-*imgs/*
+*.bbl
+imgs*
